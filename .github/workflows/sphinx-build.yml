@@ -17,7 +17,7 @@ jobs:
       with:
         persist-credentials: false  # This is necessary for the peaceiris/actions-gh-pages action
 
-    
+
 
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.4
