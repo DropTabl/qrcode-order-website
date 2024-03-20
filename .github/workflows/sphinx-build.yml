@@ -20,12 +20,15 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.8'  # Adjust as needed
+        python-version: '3.11'
 
     - name: Install dependencies
       run: |
         pip install sphinx
-        # Add other dependencies here, e.g., pip install -r docs/requirements.txt
+        pip install flask
+        pip install requests
+        pip install pyttsx3
+        pip install qrcode
 
     - name: Build Sphinx Documentation
       run: |
