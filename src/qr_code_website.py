@@ -10,8 +10,13 @@ from config import conf_link_creation as conf_link_create
 from config import conf_static_website as cond_static_web
 from urllib.parse import urlparse, parse_qs
 import pyttsx3
+import os
 
-app = Flask(__name__,template_folder='/home/students/ge56qon/Project/Project/HTML')
+basepath = os.path.dirname(os.path.abspath(__file__)) + "/HTML"
+
+
+
+app = Flask(__name__,template_folder=basepath)
 shoutout_messages = []
 
 links = {}

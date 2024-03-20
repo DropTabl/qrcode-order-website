@@ -9,8 +9,6 @@ class conf_callback_sched:
     URL_DEBUG = "/getall"
 
 
-
-
 #https://lehre.bpm.in.tum.de/ports/8121/
 class conf_order_sched:
     PORT = 8121
