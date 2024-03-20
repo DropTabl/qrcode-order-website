@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Order Store &#8212; QR Order  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="canonical" href="https://droptabl.github.io/qrcode-order-website/Order_Store.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Simulator" href="Simulator.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="order-store">
+<h1>Order Store<a class="headerlink" href="#order-store" title="Permalink to this heading">¶</a></h1>
+<blockquote>
+<div><p>The <code class="docutils literal notranslate"><span class="pre">order_store</span></code> module provides a way to keep track of the state of an order. It offers methods that can be called from the CPEE to update the state of the order. The state of the order is stored on a thread safe que.
+Also it provides getter methods to get the state of the order which is used by the Website to display the states of the orders to the user.</p>
+<p>The figure below shows the high-level architecture of the <code class="docutils literal notranslate"><span class="pre">order_store</span></code> module:
+The order store is the interface between the CPEE and the website. The CPEE sends the order state to the order store and the website gets the order state from the order store.</p>
+<img alt="alternative text" class="align-center" src="_images/order_store.png" />
+<p>The <code class="docutils literal notranslate"><span class="pre">order_store</span></code> supports a RESTful API implemented using Flask.
+See below for detailed documentation of its API endpoints and functionality.</p>
+<p><strong>API Endpoints</strong>:</p>
+<blockquote>
+<div><p><strong>Update Order Status</strong>:</p>
+<ul class="simple">
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/update_order</span></code> (configured via <code class="docutils literal notranslate"><span class="pre">conf_order_store.URL_UPDATE</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">PUT</span></code></p></li>
+<li><p><strong>Description</strong>: Updates the status of an order based on the provided order ID, orderbot ID, and new status. The endpoint accepts both JSON and form-encoded request bodies.</p></li>
+<li><p><strong>Request Fields</strong>:</p></li>
+</ul>
+<p>When sending form-encoded data:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">order_id</span></code>: The ID of the order to update.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">orderbot_id</span></code>: The ID of the orderbot associated with the order.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">status</span></code>: The new status of the order.</p></li>
+</ul>
+</div></blockquote>
+<p>When sending JSON data:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code>: The ID of the order to update.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">orderbot_id</span></code>: The ID of the orderbot associated with the order.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">status</span></code>: The new status of the order.</p></li>
+</ul>
+</div></blockquote>
+<ul>
+<li><p><strong>Example request with JSON data</strong>:</p>
+<blockquote>
+<div><div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">PUT</span> <span class="nn">/update-order</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;orderbot_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;123&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><strong>Success Response</strong>:</p>
+<blockquote>
+<div><div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Order updated&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p><strong>Error Response</strong>:</p>
+<blockquote>
+<div><p>If the request is missing required data:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">Bad Request</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Missing data&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Get All Orders</strong>:</p>
+<ul>
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/get_all</span></code> (configured via <code class="docutils literal notranslate"><span class="pre">conf_order_store.URL_GET_ALL</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+<li><p><strong>Description</strong>: Retrieves a list of all orders, useful for debugging purposes.</p></li>
+<li><p><strong>Success Response</strong>:</p>
+<blockquote>
+<div><div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="w">    </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;order_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;orderbot_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;123&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="s2">&quot;...&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Get Current Orders</strong>:</p>
+<ul>
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/get_current_order</span></code> (configured via <code class="docutils literal notranslate"><span class="pre">conf_order_store.URL_GET_CURRENT</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+<li><p><strong>Description</strong>: Fetches orders that have not yet been served and are currently in progress.</p></li>
+<li><p><strong>Success Response</strong>:</p>
+<blockquote>
+<div><div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;incomplete_orders&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;orderbot_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;123&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing&quot;</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="s2">&quot;...&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Get Completed Orders</strong>:</p>
+<ul>
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/get_completed_orders</span></code> (configured via <code class="docutils literal notranslate"><span class="pre">conf_order_store.URL_GET_COMPLETED</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+<li><p><strong>Description</strong>: Retrieves orders that have been marked as served.</p></li>
+<li><p><strong>Success Response</strong>:</p>
+<blockquote>
+<div><div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;completed_orders&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[1, 2, 3, ...]&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Get New Orders</strong>:</p>
+<ul>
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/get_new_orders</span></code> (configured via <code class="docutils literal notranslate"><span class="pre">conf_order_store.URL_GET_NEW</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+<li><p><strong>Description</strong>: Fetches orders that have been initiated but not yet started or served.</p></li>
+<li><p><strong>Success Response</strong>:</p>
+<blockquote>
+<div><div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;new_orders&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[4, 5, 6, ...]&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Module Implementation</strong>:</p>
+<span class="target" id="module-order_store"></span><dl class="py function">
+<dt class="sig sig-object py" id="order_store.get_all">
+<span class="sig-prename descclassname"><span class="pre">order_store.</span></span><span class="sig-name descname"><span class="pre">get_all</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_store.get_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the orders (for debugging purposes)
+:return: A list of all the orders</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="order_store.get_completed_orders">
+<span class="sig-prename descclassname"><span class="pre">order_store.</span></span><span class="sig-name descname"><span class="pre">get_completed_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_store.get_completed_orders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the orders that have been served
+:return: A list of the completed orders</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="order_store.get_current_order">
+<span class="sig-prename descclassname"><span class="pre">order_store.</span></span><span class="sig-name descname"><span class="pre">get_current_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_store.get_current_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current orders that are not served yet
+:return: A list of the current orders</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="order_store.get_new_orders">
+<span class="sig-prename descclassname"><span class="pre">order_store.</span></span><span class="sig-name descname"><span class="pre">get_new_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_store.get_new_orders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the orders that have been initiated but not served and not yet started
+:return: A list of the new orders</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="order_store.get_order_status">
+<span class="sig-prename descclassname"><span class="pre">order_store.</span></span><span class="sig-name descname"><span class="pre">get_order_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#order_store.get_order_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the status of an order
+:param id: The order id
+:return: The status of the order</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="order_store.update_order">
+<span class="sig-prename descclassname"><span class="pre">order_store.</span></span><span class="sig-name descname"><span class="pre">update_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_store.update_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the status of an order, given the order id, orderbot_id and the new status (in the request body)
+:return: A message indicating the status of the update</p>
+</dd></dl>
+
+</div></blockquote>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">QR Order</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="arch.html">Architectural Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how_to.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Demo+Videos+Images</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="scheduler.html">Schedulers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OMS.html">Order Management System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QR_WEB.html">QR Code Web Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Recipe.html">Recipe Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Simulator.html">Simulator</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Order Store</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Simulator.html" title="previous chapter">Simulator</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Alexander Wagner.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Order_Store.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

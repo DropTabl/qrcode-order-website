@@ -1,0 +1,419 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Schedulers &#8212; QR Order  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="canonical" href="https://droptabl.github.io/qrcode-order-website/scheduler.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Order Management System" href="OMS.html" />
+    <link rel="prev" title="Demo+Videos+Images" href="demo.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="schedulers">
+<h1>Schedulers<a class="headerlink" href="#schedulers" title="Permalink to this heading">¶</a></h1>
+<blockquote>
+<div><p>The schedulers are the heart of the order system. They manage the callbacks and the orders that arrive from the CPEE and the user.
+The figure below describes the interaction between the different modules and the CPEE.</p>
+<img alt="alternative text" class="align-center" src="_images/Scheduler.png" />
+</div></blockquote>
+<section id="callback-scheduler">
+<h2>callback_scheduler<a class="headerlink" href="#callback-scheduler" title="Permalink to this heading">¶</a></h2>
+<blockquote>
+<div><p>The <code class="docutils literal notranslate"><span class="pre">callback_scheduler</span></code> module is designed to provide interaction with the CPEE by managing callback URLs. It is integrated closely with the <a href="#id1"><span class="problematic" id="id2">``</span></a>order_scheduler’’ module to allow seamless processing of new orders and callbacks. The module provides a mechanism for registering new callback URLs, which are then used to notify the CPEE of new orders. If no new orders are available when a callback is registered, the callback URL is placed in a thread-safe queue until it can be processed. This module includes functionality to add and retrieve callbacks to the queue, allowing efficient communication with the CPEE.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">callback_scheduler</span></code> supports a RESTful API implemented using Flask.
+See below for detailed documentation of its API endpoints and functionality.</p>
+<p><strong>API Endpoints</strong>:</p>
+<blockquote>
+<div><p><strong>Set Callback</strong></p>
+<ul>
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/set_callback</span></code> (configurable via <code class="docutils literal notranslate"><span class="pre">conf_callback.URL_SET</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+<li><p><strong>Description</strong>: Adds a new callback URL to the queue if there are no immediate orders to process. If an order is available, the order data is sent back immediately.</p></li>
+<li><p><strong>Headers</strong>: Must include <code class="docutils literal notranslate"><span class="pre">Cpee-Callback</span></code> with the callback URL.</p></li>
+<li><p><strong>Success Response</strong>:</p>
+<p>If an order is available:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;orderbot_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">,</span>
+<span class="w">   </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Order Initiated&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If no order is available and the callback is queued:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+<span class="na">CPEE-CALLBACK</span><span class="o">:</span> <span class="l">true</span>
+
+<span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Callback URL added to the queue&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Error Response</strong>:</p>
+<blockquote>
+<div><p><strong>Code</strong>: 400 (Bad Request),
+<strong>Content</strong>: <code class="docutils literal notranslate"><span class="pre">{&quot;error&quot;:</span> <span class="pre">&quot;No</span> <span class="pre">Cpee-Callback</span> <span class="pre">header</span> <span class="pre">found&quot;}</span></code></p>
+<p><strong>Code</strong>: 500 (Internal Server Error),
+<strong>Content</strong>: <code class="docutils literal notranslate"><span class="pre">{&quot;error&quot;:</span> <span class="pre">&quot;&lt;error_message&gt;&quot;}</span></code></p>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Get Callback</strong></p>
+<ul>
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/get_callback</span></code> (configurable via <code class="docutils literal notranslate"><span class="pre">conf_callback.URL_GET</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+<li><p><strong>Description</strong>: Retrieves and removes the next callback URL from the queue if available.</p></li>
+<li><p><strong>Success Response</strong>:
+If a callback URL is available:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;callback_url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CPEE Callback URL&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If no callback URL is available:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;There are currently no callbacks available&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Error Response</strong>:</p>
+<p><strong>Code</strong>: 204 (No Content),
+<strong>Content</strong>: <code class="docutils literal notranslate"><span class="pre">{&quot;message&quot;:</span> <span class="pre">&quot;There</span> <span class="pre">are</span> <span class="pre">currently</span> <span class="pre">no</span> <span class="pre">callbacks</span> <span class="pre">available&quot;}</span></code></p>
+</li>
+</ul>
+<p><strong>Get All Callbacks (Debug)</strong></p>
+<ul>
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/get_all_callbacks</span></code> (configurable via <code class="docutils literal notranslate"><span class="pre">conf_callback.URL_DEBUG</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+<li><p><strong>Description</strong>: Returns a list of all callback URLs currently in the queue. This endpoint is intended for debugging purposes.</p></li>
+<li><p><strong>Success Response</strong>:</p>
+<blockquote>
+<div><div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;all_callbacks&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[&lt;callback_url_1&gt;, &lt;callback_url_2&gt;, ...]&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Module Implementation</strong>:</p>
+<span class="target" id="module-callback_scheduler"></span><dl class="py function">
+<dt class="sig sig-object py" id="callback_scheduler.get_all_callbacks">
+<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_all_callbacks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.get_all_callbacks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all the callbacks currently in the queue (for debugging purposes)
+:return: All the callbacks currently in the queue</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="callback_scheduler.get_callback">
+<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.get_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a callback URL from the queue if available and removes it from the queue
+:return: Callback URL if available, message indicating no callbacks available otherwise</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="callback_scheduler.get_order">
+<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.get_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches an order from the Order Service (if available)
+:return: Order data if available, None otherwise</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="callback_scheduler.set_callback">
+<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">set_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.set_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a callback to the queue if there are no orders available, otherwise it returns the order data
+:return: Order data if available, message indicating the callback was added to the queue otherwise</p>
+</dd></dl>
+
+</div></blockquote>
+</section>
+<section id="order-scheduler">
+<h2>order_scheduler<a class="headerlink" href="#order-scheduler" title="Permalink to this heading">¶</a></h2>
+<blockquote>
+<div><p>The <code class="docutils literal notranslate"><span class="pre">order_scheduler</span></code> module is designed to provide interaction between the <code class="docutils literal notranslate"><span class="pre">order_management_system</span></code> and the <code class="docutils literal notranslate"><span class="pre">callback_scheduler</span></code>. The module provides a mechanism for registering a new orders or getting new set orders from a que. After registering a new order, it first checks the <code class="docutils literal notranslate"><span class="pre">callback_scheduler</span></code> if there are currently any callback URLs available. If so it fetches a new callback URL and sends the order back to the CPEE using the callback URL. If there are currently no callback URLs available, it stores the new order inside a thread safe que until the order can be further processed by the <code class="docutils literal notranslate"><span class="pre">callback_scheduler</span></code>. This module includes functionality to add and retrieve orders to the queue, allowing efficient communication with the CPEE.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">order_scheduler</span></code> supports a RESTful API implemented using Flask.
+See below for detailed documentation of its API endpoints and functionality.</p>
+<p><strong>API Endpoints</strong>:</p>
+<blockquote>
+<div><p><strong>Set Order</strong></p>
+<ul>
+<li><p><strong>Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">/set_order</span></code> (configurable via <code class="docutils literal notranslate"><span class="pre">conf_order.URL_SET</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+<li><p><strong>Description</strong>: Adds a new order to the queue. If a callback URL is available, the order is sent directly to the callback URL.</p></li>
+<li><p><strong>Request Body</strong>: The expected JSON payload containing the order data:</p>
+<blockquote>
+<div><div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;drink&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gin Tonic&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Medium&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><dl>
+<dt><strong>Success Response</strong>:</dt><dd><p>If the order is added to the queue:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Order added to the queue&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;order_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the order is sent to a callback URL:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Order sent to callback URL&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;order_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><p><strong>Error Response</strong>:</p>
+<blockquote>
+<div><p>If no order data is provided or data is incomplete:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">Bad Request</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;No order data provided/Missing order details&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If there is an error with the request to the callback URL:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">500</span> <span class="ne">Internal Server Error</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Error message describing the issue&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+<p><strong>Get Order</strong></p>
+<ul>
+<li><p><strong>Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">/get_order</span></code> (configurable via <code class="docutils literal notranslate"><span class="pre">conf_order.URL_GET</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+<li><p><strong>Description</strong>: Retrieves the next order from the queue and removes it.</p></li>
+<li><dl>
+<dt><strong>Success Response</strong>:</dt><dd><p>If an order is available:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;order_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;drink&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gin Tonic&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Medium&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>If the queue is empty:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">204</span> <span class="ne">No Content</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;No orders in the queue&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Get All Orders (Debug)</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Endpoint</strong>: <code class="docutils literal notranslate"><span class="pre">/get_all_orders</span></code> (configurable via <code class="docutils literal notranslate"><span class="pre">conf_order.URL_DEBUG</span></code>)</p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">GET</span></code></p></li>
+<li><p><strong>Description</strong>: Retrieves all orders currently in the queue. Intended for debugging purposes.</p></li>
+<li><p><strong>Success Response</strong>:</p></li>
+</ul>
+<blockquote>
+<div><p>Allways returns a list of all orders currently in the queue.</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;all_orders&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;order_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;drink&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Gin Tonic&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;size&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Medium&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;John Doe&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="s2">&quot;...&quot;</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<p><strong>Module Implementation</strong>:</p>
+<span class="target" id="module-order_scheduler"></span><dl class="py function">
+<dt class="sig sig-object py" id="order_scheduler.get_all_orders">
+<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_all_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.get_all_orders" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches all orders from the queue (for debugging purposes)
+:return: A list of all orders in the queue</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="order_scheduler.get_callback_url">
+<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_callback_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.get_callback_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches the callback URL from the callback service (if available)
+:return: The callback URL or None if not available</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="order_scheduler.get_order">
+<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.get_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches the next order from the queue and removes it
+:return: The next order in the queue or a message if the queue is empty</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="order_scheduler.set_order">
+<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">set_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.set_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a new order to the queue or sends it to the callback URL if available
+:return: A response message and status code</p>
+</dd></dl>
+
+</div></blockquote>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">QR Order</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="arch.html">Architectural Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how_to.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Demo+Videos+Images</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Schedulers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#callback-scheduler">callback_scheduler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#order-scheduler">order_scheduler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="OMS.html">Order Management System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QR_WEB.html">QR Code Web Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Recipe.html">Recipe Service</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Simulator.html">Simulator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Order_Store.html">Order Store</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="demo.html" title="previous chapter">Demo+Videos+Images</a></li>
+      <li>Next: <a href="OMS.html" title="next chapter">Order Management System</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Alexander Wagner.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/scheduler.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

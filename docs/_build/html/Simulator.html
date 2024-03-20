@@ -1,0 +1,375 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Simulator &#8212; QR Order  documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="canonical" href="https://droptabl.github.io/qrcode-order-website/Simulator.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Order Store" href="Order_Store.html" />
+    <link rel="prev" title="Recipe Service" href="Recipe.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="simulator">
+<h1>Simulator<a class="headerlink" href="#simulator" title="Permalink to this heading">¶</a></h1>
+<blockquote>
+<div><p>The <code class="docutils literal notranslate"><span class="pre">simulator</span></code> module provides a simple simulator simulating the behavior of the mechanics behind the cocktail making machine.</p>
+<p>It offers the simulation of the following components:
+- The pumping of non alcoholic and alcoholic liquids
+- The processing of non liquid ingredients
+- The mixing of the ingredients</p>
+<p>The figure below shows the high-level architecture of the <code class="docutils literal notranslate"><span class="pre">simulator</span></code> module:
+The simulator just simulates the consume of different ingredients and the mixing of them. It does not have any physical components.</p>
+<img alt="alternative text" class="align-center" src="_images/Simulator.png" />
+<p>The <code class="docutils literal notranslate"><span class="pre">simulator</span></code> supports a RESTful API implemented using Flask.
+See below for detailed documentation of its API endpoints and functionality.</p>
+<p><strong>API Endpoints</strong>:</p>
+<blockquote>
+<div><p><strong>Pump Liquids</strong>:</p>
+<ul>
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/pump_liquid</span></code></p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+<li><p><strong>Description</strong>: Simulates pumping alcoholic and non alcoholic liquids based on the given amount and type defined by each recipe.</p></li>
+<li><p><strong>Request Fields</strong>:</p>
+<blockquote>
+<div><p>When sending form-encoded data:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">liquor</span></code>: A JSON-encoded array containing liquor items with their names and amounts in grams.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">non_alcohol</span></code>: A JSON-encoded array containing non-alcohol items with their names and amounts in grams.</p></li>
+</ul>
+<p>When sending JSON data:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">liquor</span></code>: An array containing liquor items with their names and amounts in grams.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">non_alcohol</span></code>: An array containing non-alcohol items with their names and amounts in grams.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Example request with JSON data</strong>:</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/pump_liquid</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;liquor&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Vodka&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;amount_grams&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;non_alcohol&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Orange Juice&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nt">&quot;amount_grams&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Success Response</strong>:</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ingredients processed successfully&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Error Response</strong>:</p></li>
+</ul>
+<p>If the request is invalid or missing required fields:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">Bad Request</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Invalid request, missing &#39;liquor&#39; or &#39;non_alcohol&#39;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Processing Other Ingredients</strong>:</p>
+<ul>
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/process_ingredient</span></code></p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+<li><p><strong>Description</strong>: Simulates the processing of non liquid ingredients. (e.g. ice, sugar, salt, etc.)</p></li>
+<li><p><strong>Request Fields</strong>:</p>
+<blockquote>
+<div><p>When sending form-encoded data:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">other</span></code>: A JSON-encoded array containing other ingredient items with their names and amounts in grams.</p></li>
+</ul>
+<p>When sending JSON data:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">other</span></code>: An array containing other ingredient items with their names and amounts in grams.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Example request with JSON data</strong>:</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/process_ingredient</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;other&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Garnish&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="nt">&quot;amount_grams&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Success Response</strong>:</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Other ingredients processed successfully&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Error Response</strong>:</p></li>
+</ul>
+<p>If the request is invalid or missing the ‘other’ field:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">Bad Request</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Invalid request, missing &#39;Other&#39;&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Mix</strong>:</p>
+<ul>
+<li><p><strong>URL</strong>: <code class="docutils literal notranslate"><span class="pre">/mix</span></code></p></li>
+<li><p><strong>Method</strong>: <code class="docutils literal notranslate"><span class="pre">POST</span></code></p></li>
+<li><p><strong>Description</strong>: Simulates mixing the cocktail based on the given mix technique, strength and duration defined by each cocktail recipe.</p></li>
+<li><p><strong>Request Fields</strong>:</p>
+<blockquote>
+<div><p>When sending form-encoded data:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">mix_technique</span></code>: A JSON-encoded object containing the mixing technique, strength, and duration.</p></li>
+</ul>
+<p>When sending JSON data:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">technique</span></code>: The technique used for mixing the cocktail.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">strength</span></code>: The intensity of mixing.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">duration</span></code>: The time duration for which ingredients are to be mixed.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Example request with JSON data</strong>:</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/mix</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Host</span><span class="o">:</span> <span class="l">example.com</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;technique&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Shake&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;strength&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Medium&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Success Response</strong>:</p></li>
+</ul>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Mixed cocktail successfully&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>Error Response</strong>:</p></li>
+</ul>
+<p>If the request is invalid or missing required fields:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">400</span> <span class="ne">Bad Request</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Invalid request, missing required mixing parameters&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p><strong>Module Implementation</strong>:</p>
+<span class="target" id="module-simulator"></span><dl class="py function">
+<dt class="sig sig-object py" id="simulator.complete_order">
+<span class="sig-prename descclassname"><span class="pre">simulator.</span></span><span class="sig-name descname"><span class="pre">complete_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#simulator.complete_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Complete the order
+:return: A JSON response with a message indicating the order was completed successfully</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simulator.consume">
+<span class="sig-prename descclassname"><span class="pre">simulator.</span></span><span class="sig-name descname"><span class="pre">consume</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amount</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simulator.consume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate consuming an ingredient
+:param item: The ingredient to consume
+:param amount: The amount of the ingredient to consume
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simulator.mix">
+<span class="sig-prename descclassname"><span class="pre">simulator.</span></span><span class="sig-name descname"><span class="pre">mix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">technique</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strength</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simulator.mix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate mixing a drink
+:param technique: The technique to mix the drink
+:param strength: The strength of the mix
+:param duration: The duration of the mix
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simulator.mix_ingredients">
+<span class="sig-prename descclassname"><span class="pre">simulator.</span></span><span class="sig-name descname"><span class="pre">mix_ingredients</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#simulator.mix_ingredients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mix the ingredients for a cocktail
+:return: A JSON response with a message indicating the cocktail was mixed successfully</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simulator.process_ingredient">
+<span class="sig-prename descclassname"><span class="pre">simulator.</span></span><span class="sig-name descname"><span class="pre">process_ingredient</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#simulator.process_ingredient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process the other ingredients for a cocktail, consuming the other ingredients
+:return: A JSON response with a message indicating the other ingredients were processed successfully</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simulator.pump_liquid">
+<span class="sig-prename descclassname"><span class="pre">simulator.</span></span><span class="sig-name descname"><span class="pre">pump_liquid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#simulator.pump_liquid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process the ingredients for a cocktail, consuming the liquor and non-alcohol ingredients
+:return: A JSON response with a message indicating the ingredients were processed successfully</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simulator.serve">
+<span class="sig-prename descclassname"><span class="pre">simulator.</span></span><span class="sig-name descname"><span class="pre">serve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drink</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#simulator.serve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulate serving a drink
+:param drink: The drink to serve
+:return: None</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="simulator.serve_cocktail">
+<span class="sig-prename descclassname"><span class="pre">simulator.</span></span><span class="sig-name descname"><span class="pre">serve_cocktail</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#simulator.serve_cocktail" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serve the cocktail
+:return: A JSON response with a message indicating the cocktail was served successfully</p>
+</dd></dl>
+
+</div></blockquote>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">QR Order</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">General:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="arch.html">Architectural Design</a></li>
+<li class="toctree-l1"><a class="reference internal" href="how_to.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="demo.html">Demo+Videos+Images</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Documentation:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="scheduler.html">Schedulers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="OMS.html">Order Management System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="QR_WEB.html">QR Code Web Application</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Recipe.html">Recipe Service</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Simulator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Order_Store.html">Order Store</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="Recipe.html" title="previous chapter">Recipe Service</a></li>
+      <li>Next: <a href="Order_Store.html" title="next chapter">Order Store</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2024, Alexander Wagner.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/Simulator.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
