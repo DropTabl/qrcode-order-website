@@ -1,0 +1,43 @@
+name: Build Sphinx Documentation
+
+on:
+  push:
+name: Build and Deploy Sphinx Documentation
+
+on:
+  push:
+    branches:
+      - main  # Adjust if your default branch has a different name
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        persist-credentials: false  # This is necessary for the peaceiris/actions-gh-pages action
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'  # Adjust as needed
+
+    - name: Install dependencies
+      run: |
+        pip install sphinx
+        # Add other dependencies here, e.g., pip install -r docs/requirements.txt
+
+    - name: Build Sphinx Documentation
+      run: |
+        cd docs
+        make html
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs/_build/html
