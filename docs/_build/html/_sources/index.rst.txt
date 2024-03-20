@@ -16,7 +16,7 @@ QR-Code Base Order Website Documentation
 This is the documentation for the QR-Code Base Order Website.
 This website is a order website that uses QR codes to place cocktail orders.
 
-The complete documentation can be found on my directory at the `Lehre Server <https://lehre.bpm.in.tum.de/~ge56qon/docs/index.html>`_ or at this `GitHub Page <https://lehre.bpm.in.tum.de/~ge56qon/docs/index.html>`_.
+The complete documentation can be found on my directory at the `Lehre Server <https://lehre.bpm.in.tum.de/~ge56qon/docs/index.html>`_ or at this `GitHub Page <https://droptabl.github.io/qrcode-order-website/>`_.
 
 
 Building the documentation locally
