@@ -17,23 +17,7 @@ jobs:
       with:
         persist-credentials: false  # This is necessary for the peaceiris/actions-gh-pages action
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-
-    - name: Install dependencies
-      run: |
-        pip install sphinx
-        pip install flask
-        pip install requests
-        pip install pyttsx3
-        pip install qrcode
-
-    - name: Build Sphinx Documentation
-      run: |
-        cd docs
-        make html
+    
 
     - name: Deploy to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.4
