@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('../src'))
 project = 'QR Order'
 copyright = '2024, Alexander Wagner'
 author = 'Alexander Wagner'
-
+html_baseurl = 'https://droptabl.github.io/qrcode-order-website/'
 
 # -- General configuration ---------------------------------------------------
 
