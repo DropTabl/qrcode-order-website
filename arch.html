@@ -1,16 +1,19 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Architectural Design &#8212; QR Order  documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
-    <script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="canonical" href="https://droptabl.github.io/qrcode-order-website/arch.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -19,9 +22,8 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-
   
-  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
   
@@ -34,10 +36,10 @@
           <div class="body" role="main">
             
   <section id="architectural-design">
-<h1>Architectural Design<a class="headerlink" href="#architectural-design" title="Link to this heading">¶</a></h1>
+<h1>Architectural Design<a class="headerlink" href="#architectural-design" title="Permalink to this heading">¶</a></h1>
 <p>This directory contains the architectural design of the system.</p>
 <section id="components">
-<h2>Components<a class="headerlink" href="#components" title="Link to this heading">¶</a></h2>
+<h2>Components<a class="headerlink" href="#components" title="Permalink to this heading">¶</a></h2>
 <p>The components of the system are as follows:</p>
 <ol class="arabic simple">
 <li><p><a class="reference internal" href="scheduler.html"><span class="doc">Schedulers</span></a>: The schedulers are responsible for scheduling the orders and the cpee callback urls.</p></li>
@@ -49,12 +51,12 @@
 </ol>
 </section>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
 <p>The figure below shows the more detailed architecture of the complete system. It shows the actions performed when there are two users ordering cocktails.</p>
 <img alt="alternative text" class="align-center" src="_images/overview.png" />
 </section>
 <section id="cpee-models">
-<h2>CPEE Models<a class="headerlink" href="#cpee-models" title="Link to this heading">¶</a></h2>
+<h2>CPEE Models<a class="headerlink" href="#cpee-models" title="Permalink to this heading">¶</a></h2>
 <p>The CPEE models are as follows:</p>
 <ol class="arabic">
 <li><p><strong>Website</strong>: The main process setting the links to the page and then starting the CPEE order processes.</p>
@@ -80,7 +82,7 @@
 </ol>
 </section>
 <section id="cpee-interconnections">
-<h2>CPEE Interconnections<a class="headerlink" href="#cpee-interconnections" title="Link to this heading">¶</a></h2>
+<h2>CPEE Interconnections<a class="headerlink" href="#cpee-interconnections" title="Permalink to this heading">¶</a></h2>
 <p>The figure below shows the high-level architecture of the complete system including all CPEE models.
 A more detailed view can be found in the respective component’s documentation.</p>
 <img alt="alternative text" class="align-center" src="_images/cpeearch.png" />
@@ -158,11 +160,11 @@ A more detailed view can be found in the respective component’s documentation.
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2024, Alexander Wagner.
+      &copy;2024, Alexander Wagner.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/arch.rst.txt"

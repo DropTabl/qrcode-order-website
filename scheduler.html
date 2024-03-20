@@ -1,16 +1,19 @@
+
 <!DOCTYPE html>
 
-<html lang="en" data-content_root="./">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
     <title>Schedulers &#8212; QR Order  documentation</title>
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
-    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=12dfc556" />
-    <script src="_static/documentation_options.js?v=5929fcd5"></script>
-    <script src="_static/doctools.js?v=888ff710"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
     <link rel="canonical" href="https://droptabl.github.io/qrcode-order-website/scheduler.html" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -19,9 +22,8 @@
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
-
   
-  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head><body>
   
@@ -34,14 +36,14 @@
           <div class="body" role="main">
             
   <section id="schedulers">
-<h1>Schedulers<a class="headerlink" href="#schedulers" title="Link to this heading">¶</a></h1>
+<h1>Schedulers<a class="headerlink" href="#schedulers" title="Permalink to this heading">¶</a></h1>
 <blockquote>
 <div><p>The schedulers are the heart of the order system. They manage the callbacks and the orders that arrive from the CPEE and the user.
 The figure below describes the interaction between the different modules and the CPEE.</p>
 <img alt="alternative text" class="align-center" src="_images/Scheduler.png" />
 </div></blockquote>
 <section id="callback-scheduler">
-<h2>callback_scheduler<a class="headerlink" href="#callback-scheduler" title="Link to this heading">¶</a></h2>
+<h2>callback_scheduler<a class="headerlink" href="#callback-scheduler" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><p>The <code class="docutils literal notranslate"><span class="pre">callback_scheduler</span></code> module is designed to provide interaction with the CPEE by managing callback URLs. It is integrated closely with the <a href="#id1"><span class="problematic" id="id2">``</span></a>order_scheduler’’ module to allow seamless processing of new orders and callbacks. The module provides a mechanism for registering new callback URLs, which are then used to notify the CPEE of new orders. If no new orders are available when a callback is registered, the callback URL is placed in a thread-safe queue until it can be processed. This module includes functionality to add and retrieve callbacks to the queue, allowing efficient communication with the CPEE.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">callback_scheduler</span></code> supports a RESTful API implemented using Flask.
@@ -136,30 +138,30 @@ If a callback URL is available:</p>
 </ul>
 </div></blockquote>
 <p><strong>Module Implementation</strong>:</p>
-<dl class="py function" id="module-callback_scheduler">
+<span class="target" id="module-callback_scheduler"></span><dl class="py function">
 <dt class="sig sig-object py" id="callback_scheduler.get_all_callbacks">
-<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_all_callbacks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.get_all_callbacks" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_all_callbacks</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.get_all_callbacks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all the callbacks currently in the queue (for debugging purposes)
 :return: All the callbacks currently in the queue</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="callback_scheduler.get_callback">
-<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.get_callback" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.get_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a callback URL from the queue if available and removes it from the queue
 :return: Callback URL if available, message indicating no callbacks available otherwise</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="callback_scheduler.get_order">
-<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.get_order" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.get_order" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches an order from the Order Service (if available)
 :return: Order data if available, None otherwise</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="callback_scheduler.set_callback">
-<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">set_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.set_callback" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">callback_scheduler.</span></span><span class="sig-name descname"><span class="pre">set_callback</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#callback_scheduler.set_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a callback to the queue if there are no orders available, otherwise it returns the order data
 :return: Order data if available, message indicating the callback was added to the queue otherwise</p>
 </dd></dl>
@@ -167,7 +169,7 @@ If a callback URL is available:</p>
 </div></blockquote>
 </section>
 <section id="order-scheduler">
-<h2>order_scheduler<a class="headerlink" href="#order-scheduler" title="Link to this heading">¶</a></h2>
+<h2>order_scheduler<a class="headerlink" href="#order-scheduler" title="Permalink to this heading">¶</a></h2>
 <blockquote>
 <div><p>The <code class="docutils literal notranslate"><span class="pre">order_scheduler</span></code> module is designed to provide interaction between the <code class="docutils literal notranslate"><span class="pre">order_management_system</span></code> and the <code class="docutils literal notranslate"><span class="pre">callback_scheduler</span></code>. The module provides a mechanism for registering a new orders or getting new set orders from a que. After registering a new order, it first checks the <code class="docutils literal notranslate"><span class="pre">callback_scheduler</span></code> if there are currently any callback URLs available. If so it fetches a new callback URL and sends the order back to the CPEE using the callback URL. If there are currently no callback URLs available, it stores the new order inside a thread safe que until the order can be further processed by the <code class="docutils literal notranslate"><span class="pre">callback_scheduler</span></code>. This module includes functionality to add and retrieve orders to the queue, allowing efficient communication with the CPEE.</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">order_scheduler</span></code> supports a RESTful API implemented using Flask.
@@ -298,30 +300,30 @@ See below for detailed documentation of its API endpoints and functionality.</p>
 </div></blockquote>
 </div></blockquote>
 <p><strong>Module Implementation</strong>:</p>
-<dl class="py function" id="module-order_scheduler">
+<span class="target" id="module-order_scheduler"></span><dl class="py function">
 <dt class="sig sig-object py" id="order_scheduler.get_all_orders">
-<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_all_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.get_all_orders" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_all_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.get_all_orders" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches all orders from the queue (for debugging purposes)
 :return: A list of all orders in the queue</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="order_scheduler.get_callback_url">
-<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_callback_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.get_callback_url" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_callback_url</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.get_callback_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches the callback URL from the callback service (if available)
 :return: The callback URL or None if not available</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="order_scheduler.get_order">
-<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.get_order" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">get_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.get_order" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fetches the next order from the queue and removes it
 :return: The next order in the queue or a message if the queue is empty</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="order_scheduler.set_order">
-<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">set_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.set_order" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">order_scheduler.</span></span><span class="sig-name descname"><span class="pre">set_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#order_scheduler.set_order" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds a new order to the queue or sends it to the callback URL if available
 :return: A response message and status code</p>
 </dd></dl>
@@ -399,11 +401,11 @@ See below for detailed documentation of its API endpoints and functionality.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &#169;2024, Alexander Wagner.
+      &copy;2024, Alexander Wagner.
       
       |
-      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 7.2.6</a>
-      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 0.7.16</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/scheduler.rst.txt"
