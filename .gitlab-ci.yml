@@ -1,0 +1,15 @@
+pages:
+  stage: deploy
+  image: python:latest
+  before_script:
+    - pip install sphinx
+    - cd docs
+    - make html
+    - cd ..
+  script:
+    - mv docs/_build/html public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master

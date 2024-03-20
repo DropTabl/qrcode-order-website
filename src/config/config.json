@@ -1,0 +1,68 @@
+{
+  "BASE_URL": "https://lehre.bpm.in.tum.de/ports/",
+  "ORDER_URL": "https://lehre.bpm.in.tum.de/ports/8120/set_callback",
+  "RECIPE_URL": "https://lehre.bpm.in.tum.de/ports/8125/get_ingredients",
+  "PUMP_URL": "https://lehre.bpm.in.tum.de/ports/8126/pump_liquids",
+  "MIX_URL":"https://lehre.bpm.in.tum.de/ports/8126/mix_ingredients",
+  "PROCESS_ING_URL": "https://lehre.bpm.in.tum.de/ports/8126/process_ingredients",
+  "SERVE_URL": "https://lehre.bpm.in.tum.de/ports/8126/serve_cocktail",
+  "COMPLETE_URL": "https://lehre.bpm.in.tum.de/ports/8126/complete",
+  "SHOUTOUT_URL": "https://lehre.bpm.in.tum.de/ports/8124/shoutout",
+  "ANALYSE_UPDATE_ORDER_URL": "https://lehre.bpm.in.tum.de/ports/8129/update_status",
+  "conf_callback_sched": {
+    "PORT": 8120,
+    "URL_GET": "/get_callback",
+    "URL_SET": "/set_callback",
+    "URL_DEBUG": "/getall"
+  },
+  "conf_order_sched": {
+    "PORT": 8121,
+    "URL_GET": "/get_order",
+    "URL_SET": "/set_order",
+    "URL_DEBUG": "/getall"
+  },
+  "conf_static_oms": {
+    "PORT": 8122,
+    "URL_SET": "/OMS"
+  },
+  "conf_link_creation": {
+    "PORT": 8123,
+    "URL_GET": "/get_cocktail_links"
+  },
+  "conf_avail_cocktails": {
+    "URL_GET": "https://lehre.bpm.in.tum.de/~ge56qon/PHP/avail_cocktails.php"
+  },
+  "conf_static_website": {
+    "PORT": 8124
+  },
+  "conf_querry_recepie": {
+    "PORT": 8125,
+    "URL_GET": "/get_ingredients",
+    "RECEPIE_PATH": "https://lehre.bpm.in.tum.de/~ge56qon/PHP/serve_cocktails.php"
+  },
+  "conf_process_ingredients": {
+    "PORT": 8126,
+    "URL_PUMP": "/pump_liquids",
+    "URL_PROCESS": "/process_ingredients",
+    "URL_MIX": "/mix_ingredients",
+    "URL_SERVE": "/serve_cocktail",
+    "URL_COMPLETE": "/complete"
+  },
+  "conf_shoutout": {
+    "PORT": 8127,
+    "URL_SET": "/shoutout"
+  },
+  "conf_analyse_logs": {
+    "PORT": 8128,
+    "URL_SET": "/analyse"
+  },
+  "conf_order_store": {
+    "PORT": 8129,
+    "URL_UPDATE": "/update_status",
+    "URL_GET": "/get_status/<int:id>'",
+    "URL_GET_ALL": "/get_all",
+    "URL_GET_CURRENT": "/get_current",
+    "URL_GET_COMPLETED": "/get_completed",
+    "URL_GET_NEW": "/get_new"
+  }
+}

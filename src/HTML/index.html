@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>QR Code Drinks</title>
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            text-align: center;
+        }
+        .grid-item {
+            margin: 10px;
+        }
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+            text-align: left;
+        }
+        .orders-section {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid">
+        {% for drink in drinks %}
+            <div class="grid-item">
+                <h2>{{ drink.drink }}</h2>
+                <img src="data:image/jpeg;base64,{{ drink.qr_code }}" alt="{{ drink.drink }} QR Code">
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="current-order">
+        <p><b>Current Order ID:</b> <span id="order-id">Loading...</span></p>
+        <p>Status: <span id="order-status">Loading...</span></p>
+    </div>
+
+
+
+    <div class="orders-section">
+        <h3>Completed Orders</h3>
+        <table id="completed-orders-table">
+            <tr>
+                <th>Order ID</th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="orders-section">
+        <h3>New Orders</h3>
+        <table id="new-orders-table">
+            <tr>
+                <th>Order ID</th>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function fetchCurrentOrders() {
+    fetch('https://lehre.bpm.in.tum.de/ports/8129/get_current')
+        .then(response => response.json())
+        .then(data => {
+            const orderIdElement = document.getElementById('order-id');
+            const orderStatusElement = document.getElementById('order-status');
+
+            if (data.incomplete_orders && data.incomplete_orders.length > 0) {
+                // Clear the loading message
+                orderIdElement.innerHTML = '';
+                orderStatusElement.innerHTML = '';
+
+                // Create a list of orders
+                let ordersList = '<ul>';
+                data.incomplete_orders.forEach(order => {
+                    ordersList += `<li>Order ID: ${order.id} - Status: ${order.status}</li>`;
+                });
+                ordersList += '</ul>';
+
+                // Append the list to the order ID element
+                orderIdElement.innerHTML = ordersList;
+            } else {
+                // No active orders
+                orderIdElement.innerText = 'N/A';
+                orderStatusElement.innerText = 'Currently no active orders';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching current orders:', error);
+            document.getElementById('order-id').innerText = 'Error loading orders';
+            document.getElementById('order-status').innerText = '';
+        });
+}
+
+
+
+
+            function fetchCompletedOrders() {
+               fetch('https://lehre.bpm.in.tum.de/ports/8129/get_completed')
+        .then(response => response.json())
+        .then(data => {
+            const table = document.getElementById('completed-orders-table');
+            table.innerHTML = '<tr><th>Order ID</th></tr>';
+
+            data.completed_orders.forEach(orderId => {
+                let row = table.insertRow(-1);
+                let cell = row.insertCell(0);
+                cell.textContent = orderId;
+            });
+        })
+        .catch(error => console.error('Error fetching completed orders:', error));
+            }
+
+            function fetchNewOrders() {
+                fetch('https://lehre.bpm.in.tum.de/ports/8129/get_new')
+            .then(response => response.json())
+            .then(data => {
+                const table = document.getElementById('new-orders-table');
+                table.innerHTML = '<tr><th>Order ID</th></tr>';
+
+                data.new_orders.forEach(orderId => {
+                    let row = table.insertRow(-1);
+                    let cell = row.insertCell(0);
+                    cell.textContent = orderId;
+                });
+            })
+            .catch(error => console.error('Error fetching new orders:', error));
+            }
+
+            function speak(text) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                speechSynthesis.speak(utterance);
+            }
+
+            function fetchShoutout() {
+    // Replace URL with your actual endpoint for fetching shoutout messages
+    fetch('https://lehre.bpm.in.tum.de/ports/8124/shoutout_get', {
+        method: 'GET', // Assume you have a corresponding GET endpoint or change as needed
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.message) {
+            speak(data.message);
+        }
+    })
+    .catch(error => console.error('Error fetching shoutout message:', error));
+}
+            setInterval(fetchShoutout, 10000);
+            setInterval(fetchCurrentOrders, 500);
+            setInterval(fetchCompletedOrders, 500);
+            setInterval(fetchNewOrders, 500);
+            fetchShoutout();
+            fetchCurrentOrders();
+            fetchCompletedOrders();
+            fetchNewOrders();
+        });
+    </script>
+</body>
+</html>

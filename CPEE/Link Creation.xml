@@ -1,0 +1,80 @@
+<testset xmlns="http://cpee.org/ns/properties/2.0">
+  <executionhandler>ruby</executionhandler>
+  <dataelements>
+    <baseurl>https://lehre.bpm.in.tum.de/</baseurl>
+    <omsport>8122</omsport>
+  </dataelements>
+  <endpoints>
+    <timeout>https://cpee.org/services/timeout.php</timeout>
+    <subprocess>https://cpee.org/flow/start/url/</subprocess>
+    <available>https://lehre.bpm.in.tum.de/~ge56qon/PHP/avail_cocktails.php</available>
+  </endpoints>
+  <attributes>
+    <info>Link Creation</info>
+    <creator>Christine Ashcreek</creator>
+    <author>Christine Ashcreek</author>
+    <modeltype>CPEE</modeltype>
+    <guarded>none</guarded>
+    <guarded_id/>
+    <model_uuid>58f30787-722d-436b-9392-d6625c928230</model_uuid>
+    <model_version/>
+    <theme>dataflow</theme>
+    <design_dir>Teaching.dir/Prak.dir/TUM-Prak-23-WS.dir/Wagner.dir</design_dir>
+    <design_stage>development</design_stage>
+  </attributes>
+  <description>
+    <description xmlns="http://cpee.org/ns/description/1.0">
+      <call id="a1" endpoint="available">
+        <parameters>
+          <label>Get Cocktails</label>
+          <method>:get</method>
+          <arguments/>
+        </parameters>
+        <code>
+          <prepare/>
+          <finalize output="result">data.cocktailurls = result.select { |k, v| v }.map do |k, v|
+  [ k, File.join(data.baseurl, data.omsport.to_s, data.omsurl, "?drink=#{k.gsub(' ', '+')}")]
+end</finalize>
+          <update output="result"/>
+          <rescue output="result"/>
+        </code>
+        <annotations>
+          <_generic/>
+          <_timing>
+            <_timing_weight/>
+            <_timing_avg/>
+            <explanations/>
+          </_timing>
+          <_shifting>
+            <_shifting_type>Duration</_shifting_type>
+          </_shifting>
+          <_context_data_analysis>
+            <probes/>
+            <ips/>
+          </_context_data_analysis>
+          <report>
+            <url/>
+          </report>
+          <_notes>
+            <_notes_general/>
+          </_notes>
+        </annotations>
+        <documentation>
+          <input/>
+          <output/>
+          <implementation>
+            <description/>
+          </implementation>
+          <code>
+            <description/>
+          </code>
+        </documentation>
+      </call>
+    </description>
+  </description>
+  <transformation>
+    <description type="copy"/>
+    <dataelements type="none"/>
+    <endpoints type="none"/>
+  </transformation>
+</testset>

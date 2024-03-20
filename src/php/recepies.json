@@ -1,0 +1,202 @@
+{
+  "cocktails": [
+    {
+      "name": "Gin Tonic",
+      "cocktail_id": 1,
+      "ingredients": {
+        "non_alcohol": [
+          {
+            "name": "Tonic Water",
+            "amount_grams": 200
+          }
+        ],
+        "liquor": [
+          {
+            "name": "Gin",
+            "amount_grams": 50
+          }
+        ],
+        "other": []
+      },
+      "mix_technique":
+          {
+            "technique": "mix",
+            "strength": 8,
+            "duration": 10
+          }
+
+    },
+    {
+      "name": "Martini",
+      "cocktail_id": 2,
+      "ingredients": {
+        "non_alcohol": [],
+        "liquor": [
+          {
+            "name": "Gin",
+            "amount_grams": 50
+          },
+          {
+            "name": "Dry Vermouth",
+            "amount_grams": 10
+          }
+        ],
+        "other": [
+          {
+            "name": "Olive",
+            "amount_grams": 5
+          }
+        ]
+      },
+      "mix_technique":
+          {
+            "technique": "stir",
+            "strength": 3,
+            "duration": 10
+          }
+
+    },
+    {
+      "name": "Mai Tai",
+      "cocktail_id": 3,
+      "ingredients": {
+        "non_alcohol": [
+          {
+            "name": "Lime Juice",
+            "amount_grams": 30
+          }
+        ],
+        "liquor": [
+          {
+            "name": "White Rum",
+            "amount_grams": 40
+          },
+          {
+            "name": "Dark Rum",
+            "amount_grams": 40
+          },
+          {
+            "name": "Orange Curaçao",
+            "amount_grams": 15
+          },
+          {
+            "name": "Orgeat Syrup",
+            "amount_grams": 15
+          }
+        ],
+        "other": []
+      },
+      "mix_technique":
+          {
+            "technique": "mix",
+            "strength": 10,
+            "duration": 8
+          }
+
+    },
+    {
+      "name": "Piña Colada",
+      "cocktail_id": 4,
+      "ingredients": {
+        "non_alcohol": [
+          {
+            "name": "Pineapple Juice",
+            "amount_grams": 90
+          },
+          {
+            "name": "Coconut Cream",
+            "amount_grams": 30
+          }
+        ],
+        "liquor": [
+          {
+            "name": "White Rum",
+            "amount_grams": 50
+          }
+        ],
+        "other": []
+      },
+      "mix_technique":
+          {
+            "technique": "mix",
+            "strength": 10,
+            "duration": 10
+          }
+
+    },
+    {
+      "name": "Mojito",
+      "cocktail_id": 5,
+      "ingredients": {
+        "non_alcohol": [
+          {
+            "name": "Soda Water",
+            "amount_grams": 100
+          },
+          {
+            "name": "Lime Juice",
+            "amount_grams": 30
+          }
+        ],
+        "liquor": [
+          {
+            "name": "White Rum",
+            "amount_grams": 50
+          }
+        ],
+        "other": [
+          {
+            "name": "Mint Leaves",
+            "amount_grams": 10
+          },
+          {
+            "name": "Sugar",
+            "amount_grams": 20
+          }
+        ]
+      },
+      "mix_technique":
+          {
+            "technique": "mix",
+            "strength": 8,
+            "duration": 15
+          }
+
+    },
+    {
+      "name": "Margarita",
+      "cocktail_id": 6,
+      "ingredients": {
+        "non_alcohol": [
+          {
+            "name": "Lime Juice",
+            "amount_grams": 30
+          }
+        ],
+        "liquor": [
+          {
+            "name": "Tequila",
+            "amount_grams": 50
+          },
+          {
+            "name": "Triple Sec",
+            "amount_grams": 20
+          }
+        ],
+        "other": [
+          {
+            "name": "Salt (for rim)",
+            "amount_grams": 5
+          }
+        ]
+      },
+      "mix_technique":
+          {
+            "technique": "mix",
+            "strength": 8,
+            "duration": 10
+          }
+
+    }
+  ]
+}

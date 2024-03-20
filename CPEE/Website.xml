@@ -1,0 +1,376 @@
+<testset xmlns="http://cpee.org/ns/properties/2.0">
+  <executionhandler>ruby</executionhandler>
+  <dataelements>
+    <config>{"BASE_URL":"https://lehre.bpm.in.tum.de/ports/","ORDER_URL":"https://lehre.bpm.in.tum.de/ports/8120/set_callback","RECIPE_URL":"https://lehre.bpm.in.tum.de/ports/8125/get_ingredients","PUMP_URL":"https://lehre.bpm.in.tum.de/ports/8126/pump_liquids","MIX_URL":"https://lehre.bpm.in.tum.de/ports/8126/mix_ingredients","PROCESS_ING_URL":"https://lehre.bpm.in.tum.de/ports/8126/process_ingredients","SERVE_URL":"https://lehre.bpm.in.tum.de/ports/8126/serve_cocktail","COMPLETE_URL":"https://lehre.bpm.in.tum.de/ports/8126/complete","SHOUTOUT_URL":"https://lehre.bpm.in.tum.de/ports/8124/shoutout","ANALYSE_UPDATE_ORDER_URL":"https://lehre.bpm.in.tum.de/ports/8129/update_status","conf_callback_sched":{"PORT":8120,"URL_GET":"/get_callback","URL_SET":"/set_callback","URL_DEBUG":"/getall"},"conf_order_sched":{"PORT":8121,"URL_GET":"/get_order","URL_SET":"/set_order","URL_DEBUG":"/getall"},"conf_static_oms":{"PORT":8122,"URL_SET":"/OMS"},"conf_link_creation":{"PORT":8123,"URL_GET":"/get_cocktail_links"},"conf_avail_cocktails":{"URL_GET":"https://lehre.bpm.in.tum.de/~ge56qon/PHP/avail_cocktails.php"},"conf_static_website":{"PORT":8124},"conf_querry_recepie":{"PORT":8125,"URL_GET":"/get_ingredients","RECEPIE_PATH":"https://lehre.bpm.in.tum.de/~ge56qon/PHP/serve_cocktails.php"},"conf_process_ingredients":{"PORT":8126,"URL_PUMP":"/pump_liquids","URL_PROCESS":"/process_ingredients","URL_MIX":"/mix_ingredients","URL_SERVE":"/serve_cocktail","URL_COMPLETE":"/complete"},"conf_shoutout":{"PORT":8127,"URL_SET":"/shoutout"},"conf_analyse_logs":{"PORT":8128,"URL_SET":"/analyse"},"conf_order_store":{"PORT":8129,"URL_UPDATE":"/update_status","URL_GET":"/get_status/&lt;int:id&gt;'","URL_GET_ALL":"/get_all","URL_GET_CURRENT":"/get_current","URL_GET_COMPLETED":"/get_completed","URL_GET_NEW":"/get_new"}}</config>
+    <urls>[{"drink":"Gin Tonic","link":"https://lehre.bpm.in.tum.de/ports/8122/OMS/?drink=Gin+Tonic"},{"drink":"Mai Tai","link":"https://lehre.bpm.in.tum.de/ports/8122/OMS/?drink=Mai+Tai"},{"drink":"Mojito","link":"https://lehre.bpm.in.tum.de/ports/8122/OMS/?drink=Mojito"}]</urls>
+  </dataelements>
+  <endpoints>
+    <timeout>https://cpee.org/services/timeout.php</timeout>
+    <subprocess>https://cpee.org/flow/start/url/</subprocess>
+    <config>https://lehre.bpm.in.tum.de/~ge56qon/config.json</config>
+    <links>https://lehre.bpm.in.tum.de/ports/8124/links</links>
+  </endpoints>
+  <attributes>
+    <info>Website</info>
+    <creator>Christine Ashcreek</creator>
+    <author>Christine Ashcreek</author>
+    <modeltype>CPEE</modeltype>
+    <guarded>none</guarded>
+    <guarded_id/>
+    <model_uuid>33befb44-f84d-47a6-91b0-0dca0a07aa74</model_uuid>
+    <model_version/>
+    <theme>extended</theme>
+    <design_dir>Teaching.dir/Prak.dir/TUM-Prak-23-WS.dir/Wagner.dir</design_dir>
+    <design_stage>development</design_stage>
+  </attributes>
+  <description>
+    <description xmlns="http://cpee.org/ns/description/1.0">
+      <parallel wait="-1" cancel="last">
+        <parallel_branch>
+          <call id="a1" endpoint="config">
+            <parameters>
+              <label>Get Config</label>
+              <method>:get</method>
+              <arguments/>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.config = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_generic/>
+              <_timing>
+                <_timing_weight/>
+                <_timing_avg/>
+                <explanations/>
+              </_timing>
+              <_shifting>
+                <_shifting_type>Duration</_shifting_type>
+              </_shifting>
+              <_context_data_analysis>
+                <probes/>
+                <ips/>
+              </_context_data_analysis>
+              <report>
+                <url/>
+              </report>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation>
+              <input/>
+              <output/>
+              <implementation>
+                <description/>
+              </implementation>
+              <code>
+                <description/>
+              </code>
+            </documentation>
+          </call>
+          <call id="a2" endpoint="subprocess">
+            <parameters>
+              <label>Link Creation</label>
+              <method>:post</method>
+              <arguments>
+                <behavior>wait_running</behavior>
+                <url>https://cpee.org/hub/server/Teaching.dir/Prak.dir/TUM-Prak-23-WS.dir/Wagner.dir/Link%20Creation.xml</url>
+                <init>
+                  <baseurl>!data.config['BASE_URL']</baseurl>
+                  <omsport>!data.config.dig('conf_static_oms','PORT')</omsport>
+                  <omsurl>!data.config.dig('conf_static_oms','URL_SET')</omsurl>
+                </init>
+                <endpoints/>
+                <attributes/>
+                <customization/>
+              </arguments>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.urls = result['cocktailurls']</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_generic/>
+              <_timing>
+                <_timing_weight/>
+                <_timing_avg/>
+                <explanations/>
+              </_timing>
+              <_shifting>
+                <_shifting_type>Duration</_shifting_type>
+              </_shifting>
+              <_context_data_analysis>
+                <probes/>
+                <ips/>
+              </_context_data_analysis>
+              <report>
+                <url/>
+              </report>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation>
+              <input/>
+              <output/>
+              <implementation>
+                <description/>
+              </implementation>
+              <code>
+                <description/>
+              </code>
+            </documentation>
+          </call>
+          <call id="a4" endpoint="links">
+            <parameters>
+              <label>Set Links</label>
+              <method>:put</method>
+              <arguments>
+                <URLs>!data.urls</URLs>
+              </arguments>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result"/>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_generic/>
+              <_timing>
+                <_timing_weight/>
+                <_timing_avg/>
+                <explanations/>
+              </_timing>
+              <_shifting>
+                <_shifting_type>Duration</_shifting_type>
+              </_shifting>
+              <_context_data_analysis>
+                <probes/>
+                <ips/>
+              </_context_data_analysis>
+              <report>
+                <url/>
+              </report>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation>
+              <input/>
+              <output/>
+              <implementation>
+                <description/>
+              </implementation>
+              <code>
+                <description/>
+              </code>
+            </documentation>
+          </call>
+        </parallel_branch>
+        <parallel_branch>
+          <call id="a10" endpoint="config">
+            <parameters>
+              <label>Get Config</label>
+              <method>:get</method>
+              <arguments/>
+            </parameters>
+            <code>
+              <prepare/>
+              <finalize output="result">data.config = result</finalize>
+              <update output="result"/>
+              <rescue output="result"/>
+            </code>
+            <annotations>
+              <_generic/>
+              <_timing>
+                <_timing_weight/>
+                <_timing_avg/>
+                <explanations/>
+              </_timing>
+              <_shifting>
+                <_shifting_type>Duration</_shifting_type>
+              </_shifting>
+              <_context_data_analysis>
+                <probes/>
+                <ips/>
+              </_context_data_analysis>
+              <report>
+                <url/>
+              </report>
+              <_notes>
+                <_notes_general/>
+              </_notes>
+            </annotations>
+            <documentation>
+              <input/>
+              <output/>
+              <implementation>
+                <description/>
+              </implementation>
+              <code>
+                <description/>
+              </code>
+            </documentation>
+          </call>
+          <loop mode="pre_test" condition="true">
+            <parallel wait="1" cancel="last">
+              <parallel_branch>
+                <call id="a3" endpoint="subprocess">
+                  <parameters>
+                    <label>Order Process 1</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>https://cpee.org/hub/server/Teaching.dir/Prak.dir/TUM-Prak-23-WS.dir/Wagner.dir/Order.xml</url>
+                      <init>
+                        <baseurl>!data.config['BASE_URL']</baseurl>
+                        <orderbot_id>1</orderbot_id>
+                      </init>
+                      <endpoints>
+                        <base_url>!data.config['BASE_URL']</base_url>
+                        <get_order_url>!data.config['ORDER_URL']</get_order_url>
+                        <get_recipe_url>!data.config['RECIPE_URL']</get_recipe_url>
+                        <pump_liquids_url>!data.config['PUMP_URL']</pump_liquids_url>
+                        <process_ingredients_url>!data.config['PROCESS_ING_URL']</process_ingredients_url>
+                        <mix_ingredients_url>!data.config['MIX_URL']</mix_ingredients_url>
+                        <complete_url>!data.config['COMPLETE_URL']</complete_url>
+                        <shoutout_url>!data.config['SHOUTOUT_URL']</shoutout_url>
+                        <mix_url>!data.config['MIX_URL']</mix_url>
+                        <serve_url>!data.config['SERVE_URL']</serve_url>
+                        <ana_update_order_url>!data.config['ANALYSE_UPDATE_ORDER_URL']</ana_update_order_url>
+                      </endpoints>
+                      <attributes/>
+                      <customization/>
+                    </arguments>
+                  </parameters>
+                  <code>
+                    <prepare/>
+                    <finalize output="result"/>
+                    <update output="result"/>
+                    <rescue output="result"/>
+                  </code>
+                  <annotations>
+                    <_generic/>
+                    <_timing>
+                      <_timing_weight/>
+                      <_timing_avg/>
+                      <explanations/>
+                    </_timing>
+                    <_shifting>
+                      <_shifting_type>Duration</_shifting_type>
+                    </_shifting>
+                    <_context_data_analysis>
+                      <probes/>
+                      <ips/>
+                    </_context_data_analysis>
+                    <report>
+                      <url/>
+                    </report>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation>
+                    <input/>
+                    <output/>
+                    <implementation>
+                      <description/>
+                    </implementation>
+                    <code>
+                      <description/>
+                    </code>
+                  </documentation>
+                </call>
+              </parallel_branch>
+              <parallel_branch>
+                <call id="a6" endpoint="subprocess">
+                  <parameters>
+                    <label>Order Process 2</label>
+                    <method>:post</method>
+                    <arguments>
+                      <behavior>wait_running</behavior>
+                      <url>https://cpee.org/hub/server/Teaching.dir/Prak.dir/TUM-Prak-23-WS.dir/Wagner.dir/Order.xml</url>
+                      <init>
+                        <baseurl>!data.config['BASE_URL']</baseurl>
+                        <orderbot_id>2</orderbot_id>
+                      </init>
+                      <endpoints>
+                        <base_url>!data.config['BASE_URL']</base_url>
+                        <get_order_url>!data.config['ORDER_URL']</get_order_url>
+                        <get_recipe_url>!data.config['RECIPE_URL']</get_recipe_url>
+                        <pump_liquids_url>!data.config['PUMP_URL']</pump_liquids_url>
+                        <process_ingredients_url>!data.config['PROCESS_ING_URL']</process_ingredients_url>
+                        <mix_ingredients_url>!data.config['MIX_URL']</mix_ingredients_url>
+                        <complete_url>!data.config['COMPLETE_URL']</complete_url>
+                        <shoutout_url>!data.config['SHOUTOUT_URL']</shoutout_url>
+                        <mix_url>!data.config['MIX_URL']</mix_url>
+                        <serve_url>!data.config['SERVE_URL']</serve_url>
+                        <ana_update_order_url>!data.config['ANALYSE_UPDATE_ORDER_URL']</ana_update_order_url>
+                      </endpoints>
+                      <attributes/>
+                      <customization/>
+                    </arguments>
+                  </parameters>
+                  <code>
+                    <prepare/>
+                    <finalize output="result"/>
+                    <update output="result"/>
+                    <rescue output="result"/>
+                  </code>
+                  <annotations>
+                    <_generic/>
+                    <_timing>
+                      <_timing_weight/>
+                      <_timing_avg/>
+                      <explanations/>
+                    </_timing>
+                    <_shifting>
+                      <_shifting_type>Duration</_shifting_type>
+                    </_shifting>
+                    <_context_data_analysis>
+                      <probes/>
+                      <ips/>
+                    </_context_data_analysis>
+                    <report>
+                      <url/>
+                    </report>
+                    <_notes>
+                      <_notes_general/>
+                    </_notes>
+                  </annotations>
+                  <documentation>
+                    <input/>
+                    <output/>
+                    <implementation>
+                      <description/>
+                    </implementation>
+                    <code>
+                      <description/>
+                    </code>
+                  </documentation>
+                </call>
+              </parallel_branch>
+            </parallel>
+            <_probability>
+              <_probability_min/>
+              <_probability_max/>
+              <_probability_avg/>
+            </_probability>
+          </loop>
+        </parallel_branch>
+      </parallel>
+      <stop id="a5"/>
+    </description>
+  </description>
+  <transformation>
+    <description type="copy"/>
+    <dataelements type="none"/>
+    <endpoints type="none"/>
+  </transformation>
+</testset>
