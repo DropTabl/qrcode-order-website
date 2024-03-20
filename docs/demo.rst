@@ -19,7 +19,7 @@ CPEE in Action
     .. raw:: html
 
         <video width="600" height="500" controls>
-          <source src="/media/alex/543d1127-15b2-4263-98e2-d121af9258cd/prak/qrcode-base-order-website/docs/videos/cpee.mp4" type="video/mp4">
+          <source src="_static/videos/cpee.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>
 
@@ -32,7 +32,7 @@ Website in Action
     .. raw:: html
 
         <video width="600" height="500" controls>
-          <source src="/media/alex/543d1127-15b2-4263-98e2-d121af9258cd/prak/qrcode-base-order-website/docs/videos/website.mp4" type="video/mp4">
+          <source src="_static/videos/website.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>
 
@@ -45,6 +45,6 @@ User Perspective
     .. raw:: html
 
         <video width="600" height="500" controls>
-          <source src="/media/alex/543d1127-15b2-4263-98e2-d121af9258cd/prak/qrcode-base-order-website/docs/videos/user.mp4" type="video/mp4">
+          <source src="_static/videos/user.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>
