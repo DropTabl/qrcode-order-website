@@ -4,7 +4,7 @@ Installation
 
    .. code-block:: bash
 
-      git clone https://github
+      git clone https://github.com/DropTabl/qrcode-order-website
 
 2. Install the required packages with the following command:
 
