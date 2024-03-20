@@ -9,7 +9,7 @@ Documentation
 -------------
 
 The complete documentation can be found on my directory at the [Lehre Server](https://lehre.bpm.in.tum.de/~ge56qon/docs/index.html) or at this
-[GitHub Page](https://lehre.bpm.in.tum.de/~ge56qon/docs/index.html)
+[GitHub Page](https://droptabl.github.io/qrcode-order-website/)
 
 
 There are all necessary information to install, configure and use the website. 
