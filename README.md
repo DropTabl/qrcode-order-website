@@ -2,10 +2,11 @@
 
 ![Example Image](docs/images/logo.webp)
 
-This is the documentation for the QR-Code Base Order Website.
 This website is a order website that uses QR codes to place cocktail orders.
 
-The complete documentation can be found at TODO.
+The complete documentation can be found on my directory at the `Lehre Server <https://lehre.bpm.in.tum.de/~ge56qon/docs/index.html>`_ or at this `GitHub Page <https://lehre.bpm.in.tum.de/~ge56qon/docs/index.html>`_.
+
+
 There are all necessary information to install, configure and use the website. 
 Also, the documentation contains information about the used technologies and the architecture of the website as well a
 all API endpoints.
