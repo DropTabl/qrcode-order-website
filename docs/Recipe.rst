@@ -110,7 +110,7 @@ Recipe Service
 
     **Module Implementation**:
 
-    .. automodule:: querry_recipe
+    .. automodule:: recipe_service
         :members:
         :undoc-members:
         :show-inheritance:

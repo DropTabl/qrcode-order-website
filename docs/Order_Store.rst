@@ -162,7 +162,7 @@ Order Store
 
     **Module Implementation**:
 
-    .. automodule:: querry_recipe
+    .. automodule:: order_store
         :members:
         :undoc-members:
         :show-inheritance:
